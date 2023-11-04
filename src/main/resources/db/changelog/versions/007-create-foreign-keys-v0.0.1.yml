@@ -1,0 +1,74 @@
+databaseChangeLog:
+  - preConditions:
+      - runningAs:
+          username: postgres
+
+  - changeSet:
+      id: 007v0.0.1-1
+      author: github.com/CyJay96
+      comment: Add FK for CAMPAIGNS table
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: advertiser_id
+            baseTableName: campaigns
+            constraintName: fk__campaigns__advertisers
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: advertisers
+
+  - changeSet:
+      id: 007v0.0.1-2
+      author: github.com/CyJay96
+      comment: Add FK for CAMPAIGN_COUNTRIES table
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: country_id
+            baseTableName: campaign_countries
+            constraintName: fk__campaign_countries__countries
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: countries
+
+  - changeSet:
+      id: 007v0.0.1-3
+      author: github.com/CyJay96
+      comment: Add FK for CAMPAIGN_COUNTRIES table
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: campaign_id
+            baseTableName: campaign_countries
+            constraintName: fk__campaigns_countries__campaigns
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: campaigns
+
+  - changeSet:
+      id: 007v0.0.1-4
+      author: github.com/CyJay96
+      comment: Add FK for CAMPAIGN_LANGUAGES table
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: language_id
+            baseTableName: campaign_languages
+            constraintName: fk__campaign_languages__languages
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: languages
+
+  - changeSet:
+      id: 007v0.0.1-5
+      author: github.com/CyJay96
+      comment: Add FK for CAMPAIGN_LANGUAGES table
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: campaign_id
+            baseTableName: campaign_languages
+            constraintName: fk__campaign_languages__campaigns
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: campaigns

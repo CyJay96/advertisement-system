@@ -1,0 +1,24 @@
+databaseChangeLog:
+  - preConditions:
+      - runningAs:
+          username: postgres
+
+  - changeSet:
+      id: 005v0.0.1
+      author: github.com/CyJay96
+      comment: Create CAMPAIGNS_COUNTRIES table
+      changes:
+        - createTable:
+            tableName: campaign_countries
+            columns:
+              - column:
+                  name: campaign_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: country_id
+                  type: bigint
+                  constraints:
+                    nullable: false

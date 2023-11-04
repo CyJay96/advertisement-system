@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: 008v0.0.1-test-data
+      author: github.com/CyJay96
+      context: test
+      changes:
+        - sqlFile:
+            path: test-data.sql
+            relativeToChangelogFile: true

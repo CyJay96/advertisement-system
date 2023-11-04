@@ -5,8 +5,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 import java.io.Serializable;
@@ -14,6 +16,8 @@ import java.util.List;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Schema(description = "Campaign Request")
 public class CampaignRequest implements Serializable {
 
@@ -37,11 +41,11 @@ public class CampaignRequest implements Serializable {
     @JsonProperty(value = "pictureUrl")
     private String pictureUrl;
 
-    @JsonProperty(value = "countries")
-    private List<CountryRequest> countries;
+    @JsonProperty(value = "countriesIds")
+    private List<Long> countriesIds;
 
-    @JsonProperty(value = "languages")
-    private List<LanguageRequest> languages;
+    @JsonProperty(value = "languagesIds")
+    private List<Long> languagesIds;
 
     @NotNull(message = "User type cannot be null")
     @JsonProperty(value = "userType")

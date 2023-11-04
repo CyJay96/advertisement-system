@@ -5,11 +5,14 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -53,13 +56,19 @@ public class Campaign implements BaseEntity<Long> {
     @Builder.Default
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "campaign_countries",
+            joinColumns = {@JoinColumn(name = "campaign_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "country_id", referencedColumnName = "id")})
     private List<Country> countries = new ArrayList<>();
 
     @Builder.Default
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "campaign_languages",
+            joinColumns = {@JoinColumn(name = "campaign_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "language_id", referencedColumnName = "id")})
     private List<Language> languages = new ArrayList<>();
 
     @Enumerated(value = EnumType.STRING)

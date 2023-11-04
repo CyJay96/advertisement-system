@@ -28,10 +28,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.advertisement.advertisementsystem.controller.CountryController.COUNTRY_API_PATH;
+
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = CountryController.COUNTRY_API_PATH)
+@RequestMapping(value = COUNTRY_API_PATH)
 @Tag(name = "CountryController", description = "Country API")
 public class CountryController {
 

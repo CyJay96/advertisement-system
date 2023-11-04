@@ -28,10 +28,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.advertisement.advertisementsystem.controller.LanguageController.LANGUAGE_API_PATH;
+
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = LanguageController.LANGUAGE_API_PATH)
+@RequestMapping(value = LANGUAGE_API_PATH)
 @Tag(name = "LanguageController", description = "Language API")
 public class LanguageController {
 

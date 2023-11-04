@@ -32,10 +32,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Objects;
 
+import static com.advertisement.advertisementsystem.controller.CampaignController.CAMPAIGN_API_PATH;
+
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = CampaignController.CAMPAIGN_API_PATH)
+@RequestMapping(value = CAMPAIGN_API_PATH)
 @Tag(name = "CampaignController", description = "Campaign API")
 public class CampaignController {
 

@@ -1,17 +1,21 @@
 package com.advertisement.advertisementsystem.handler;
 
 import com.advertisement.advertisementsystem.exception.EntityNotFoundException;
-import com.advertisement.advertisementsystem.exception.NoPermissionsException;
+import com.advertisement.advertisementsystem.exception.TokenExpirationException;
+import com.advertisement.advertisementsystem.exception.TokenValidationException;
+import com.advertisement.advertisementsystem.exception.UserExistenceException;
 import com.advertisement.advertisementsystem.model.dto.response.APIResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.nio.file.AccessDeniedException;
 import java.util.Optional;
 
 @Slf4j
@@ -44,14 +48,54 @@ public class GlobalExceptionHandler {
         return generateErrorResponse(exception, HttpStatus.NOT_FOUND, request);
     }
 
-    @ExceptionHandler(NoPermissionsException.class)
-    public ResponseEntity<APIResponse<Void>> handleNoPermissionsException(
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<APIResponse<Void>> handleAccessDeniedException(
             RuntimeException exception,
             HttpServletRequest request
     ) {
         log.warn(exception.getMessage(), exception);
 
         return generateErrorResponse(exception, HttpStatus.FORBIDDEN, request);
+    }
+
+    @ExceptionHandler(UserExistenceException.class)
+    public ResponseEntity<APIResponse<Void>> handleUserExistenceException(
+            RuntimeException exception,
+            HttpServletRequest request
+    ) {
+        log.warn(exception.getMessage(), exception);
+
+        return generateErrorResponse(exception, HttpStatus.CONFLICT, request);
+    }
+
+    @ExceptionHandler(TokenExpirationException.class)
+    public ResponseEntity<APIResponse<Void>> handleTokenExpirationException(
+            RuntimeException exception,
+            HttpServletRequest request
+    ) {
+        log.warn(exception.getMessage(), exception);
+
+        return generateErrorResponse(exception, HttpStatus.UNAUTHORIZED, request);
+    }
+
+    @ExceptionHandler(TokenValidationException.class)
+    public ResponseEntity<APIResponse<Void>> handleTokenValidationException(
+            RuntimeException exception,
+            HttpServletRequest request
+    ) {
+        log.warn(exception.getMessage(), exception);
+
+        return generateErrorResponse(exception, HttpStatus.UNAUTHORIZED, request);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<APIResponse<Void>> handleBadCredentialsException(
+            RuntimeException exception,
+            HttpServletRequest request
+    ) {
+        log.warn(exception.getMessage(), exception);
+
+        return generateErrorResponse(exception, HttpStatus.BAD_REQUEST, request);
     }
 
     @ExceptionHandler(Exception.class)

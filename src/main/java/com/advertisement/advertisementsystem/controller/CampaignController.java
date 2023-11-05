@@ -52,7 +52,8 @@ public class CampaignController {
     @PostMapping("/{advertiserId}")
     public ResponseEntity<APIResponse<CampaignResponse>> saveByAdvertiserId(
             @PathVariable @NotNull @PositiveOrZero Long advertiserId,
-            @RequestBody @Valid CampaignRequest campaignRequest) {
+            @RequestBody @Valid CampaignRequest campaignRequest
+    ) {
         CampaignResponse campaign = campaignService.save(advertiserId, campaignRequest);
 
         return APIResponse.of(
@@ -73,7 +74,8 @@ public class CampaignController {
 
         return APIResponse.of(
                 "All Campaigns: page_number: " + pageable.getPageNumber() +
-                        "; page_size: " + pageable.getPageSize(),
+                        "; page_size: " + pageable.getPageSize() +
+                        "; page_sort: " + pageable.getSort(),
                 CAMPAIGN_API_PATH,
                 HttpStatus.OK,
                 campaigns
@@ -87,7 +89,8 @@ public class CampaignController {
     @GetMapping("/criteria")
     public ResponseEntity<APIResponse<PageResponse<CampaignResponse>>> findAllByCriteria(
             @RequestBody(required = false) CampaignCriteria searchCriteria,
-            Pageable pageable) {
+            Pageable pageable
+    ) {
         searchCriteria = Objects.requireNonNullElse(searchCriteria, CampaignCriteria.builder().build());
         PageResponse<CampaignResponse> campaigns = campaignService.findAllByCriteria(searchCriteria, pageable);
 
@@ -96,7 +99,8 @@ public class CampaignController {
                         "; description: " + searchCriteria.getDescription() +
                         "; location: " + searchCriteria.getLocation() +
                         "; page_number: " + pageable.getPageNumber() +
-                        "; page_size: " + pageable.getPageSize(),
+                        "; page_size: " + pageable.getPageSize() +
+                        "; page_sort: " + pageable.getSort(),
                 CAMPAIGN_API_PATH + "/criteria",
                 HttpStatus.OK,
                 campaigns
@@ -128,7 +132,8 @@ public class CampaignController {
     @PutMapping("/{id}")
     public ResponseEntity<APIResponse<CampaignResponse>> update(
             @PathVariable @NotNull @PositiveOrZero Long id,
-            @RequestBody @Valid CampaignRequest campaignRequest) {
+            @RequestBody @Valid CampaignRequest campaignRequest
+    ) {
         CampaignResponse campaign = campaignService.update(id, campaignRequest);
 
         return APIResponse.of(
@@ -147,12 +152,32 @@ public class CampaignController {
     @PatchMapping("/{id}")
     public ResponseEntity<APIResponse<CampaignResponse>> updatePartially(
             @PathVariable @NotNull @PositiveOrZero Long id,
-            @RequestBody CampaignRequest campaignRequest) {
+            @RequestBody CampaignRequest campaignRequest
+    ) {
         CampaignResponse campaign = campaignService.update(id, campaignRequest);
 
         return APIResponse.of(
                 "Partial changes were applied to the Campaign with ID " + id,
                 CAMPAIGN_API_PATH + "/" + id,
+                HttpStatus.OK,
+                campaign
+        );
+    }
+
+    @Operation(summary = "Restore Campaign by ID", tags = "CampaignController")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Restored Campaign by ID"),
+            @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
+    })
+    @PatchMapping("/restore/{id}")
+    public ResponseEntity<APIResponse<CampaignResponse>> restoreById(
+            @PathVariable @NotNull @PositiveOrZero Long id
+    ) {
+        CampaignResponse campaign = campaignService.restoreById(id);
+
+        return APIResponse.of(
+                "Campaign with ID " + id + " was restored",
+                CAMPAIGN_API_PATH + "/restore/" + id,
                 HttpStatus.OK,
                 campaign
         );
@@ -164,15 +189,16 @@ public class CampaignController {
             @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<APIResponse<Void>> deleteById(
-            @PathVariable @NotNull @PositiveOrZero Long id) {
-        campaignService.deleteById(id);
+    public ResponseEntity<APIResponse<CampaignResponse>> deleteById(
+            @PathVariable @NotNull @PositiveOrZero Long id
+    ) {
+        CampaignResponse campaign = campaignService.deleteById(id);
 
         return APIResponse.of(
                 "Campaign with ID " + id + " was deleted",
                 CAMPAIGN_API_PATH + "/" + id,
                 HttpStatus.OK,
-                null
+                campaign
         );
     }
 }

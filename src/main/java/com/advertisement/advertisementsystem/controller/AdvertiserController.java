@@ -51,7 +51,8 @@ public class AdvertiserController {
     })
     @PostMapping
     public ResponseEntity<APIResponse<AdvertiserResponse>> save(
-            @RequestBody @Valid AdvertiserRequest advertiserRequest) {
+            @RequestBody @Valid AdvertiserRequest advertiserRequest
+    ) {
         AdvertiserResponse advertiser = advertiserService.save(advertiserRequest);
 
         return APIResponse.of(
@@ -72,7 +73,8 @@ public class AdvertiserController {
 
         return APIResponse.of(
                 "All Advertiser: page_number: " + pageable.getPageNumber() +
-                        "; page_size: " + pageable.getPageSize(),
+                        "; page_size: " + pageable.getPageSize() +
+                        "; page_sort: " + pageable.getSort(),
                 ADVERTISER_API_PATH,
                 HttpStatus.OK,
                 advertiser
@@ -86,7 +88,8 @@ public class AdvertiserController {
     @GetMapping("/criteria")
     public ResponseEntity<APIResponse<PageResponse<AdvertiserResponse>>> findAllByCriteria(
             @RequestBody(required = false) AdvertiserCriteria searchCriteria,
-            Pageable pageable) {
+            Pageable pageable
+    ) {
         searchCriteria = Objects.requireNonNullElse(searchCriteria, AdvertiserCriteria.builder().build());
         PageResponse<AdvertiserResponse> advertiser = advertiserService.findAllByCriteria(searchCriteria, pageable);
 
@@ -95,7 +98,8 @@ public class AdvertiserController {
                         "; description: " + searchCriteria.getDescription() +
                         "; location: " + searchCriteria.getLocation() +
                         "; page_number: " + pageable.getPageNumber() +
-                        "; page_size: " + pageable.getPageSize(),
+                        "; page_size: " + pageable.getPageSize() +
+                        "; page_sort: " + pageable.getSort(),
                 ADVERTISER_API_PATH + "/criteria",
                 HttpStatus.OK,
                 advertiser
@@ -110,12 +114,15 @@ public class AdvertiserController {
     @GetMapping("/{id}")
     public ResponseEntity<APIResponse<AdvertiserResponse>> findById(
             @PathVariable @NotNull @PositiveOrZero Long id,
-            Pageable pageable) {
+            Pageable pageable
+    ) {
         AdvertiserResponse advertiser = advertiserService.findById(id, pageable);
 
         return APIResponse.of(
-                "Advertiser with ID " + advertiser.getId() + " were found: page_number: " +
-                        pageable.getPageNumber() + "; page_size: " + pageable.getPageSize(),
+                "Advertiser with ID " + advertiser.getId() +
+                        " were found: page_number: " + pageable.getPageNumber() +
+                        "; page_size: " + pageable.getPageSize() +
+                        "; page_sort: " + pageable.getSort(),
                 ADVERTISER_API_PATH + "/" + id,
                 HttpStatus.OK,
                 advertiser
@@ -130,7 +137,8 @@ public class AdvertiserController {
     @PutMapping("/{id}")
     public ResponseEntity<APIResponse<AdvertiserResponse>> update(
             @PathVariable @NotNull @PositiveOrZero Long id,
-            @RequestBody @Valid AdvertiserRequest advertiserRequest) {
+            @RequestBody @Valid AdvertiserRequest advertiserRequest
+    ) {
         AdvertiserResponse advertiser = advertiserService.update(id, advertiserRequest);
 
         return APIResponse.of(
@@ -149,12 +157,32 @@ public class AdvertiserController {
     @PatchMapping("/{id}")
     public ResponseEntity<APIResponse<AdvertiserResponse>> updatePartially(
             @PathVariable @NotNull @PositiveOrZero Long id,
-            @RequestBody AdvertiserRequest advertiserRequest) {
+            @RequestBody AdvertiserRequest advertiserRequest
+    ) {
         AdvertiserResponse advertiser = advertiserService.update(id, advertiserRequest);
 
         return APIResponse.of(
                 "Partial changes were applied to the Advertiser with ID " + id,
                 ADVERTISER_API_PATH + "/" + id,
+                HttpStatus.OK,
+                advertiser
+        );
+    }
+
+    @Operation(summary = "Restore Advertiser by ID", tags = "AdvertiserController")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Restored Advertiser by ID"),
+            @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
+    })
+    @PatchMapping("/restore/{id}")
+    public ResponseEntity<APIResponse<AdvertiserResponse>> restoreById(
+            @PathVariable @NotNull @PositiveOrZero Long id
+    ) {
+        AdvertiserResponse advertiser = advertiserService.restoreById(id);
+
+        return APIResponse.of(
+                "Advertiser with ID " + id + " were restored",
+                ADVERTISER_API_PATH + "/restore/" + id,
                 HttpStatus.OK,
                 advertiser
         );
@@ -166,15 +194,16 @@ public class AdvertiserController {
             @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<APIResponse<Void>> deleteById(
-            @PathVariable @NotNull @PositiveOrZero Long id) {
-        advertiserService.deleteById(id);
+    public ResponseEntity<APIResponse<AdvertiserResponse>> deleteById(
+            @PathVariable @NotNull @PositiveOrZero Long id
+    ) {
+        AdvertiserResponse advertiser = advertiserService.deleteById(id);
 
         return APIResponse.of(
                 "Advertiser with ID " + id + " were deleted",
                 ADVERTISER_API_PATH + "/" + id,
                 HttpStatus.OK,
-                null
+                advertiser
         );
     }
 }

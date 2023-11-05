@@ -14,6 +14,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 public interface CountryMapper {
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "status", ignore = true)
     Country toCountry(CountryRequest countryRequest);
 
     CountryResponse toCountryResponse(Country country);
@@ -23,5 +24,6 @@ public interface CountryMapper {
             nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS
     )
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "status", ignore = true)
     void updateCountry(CountryRequest countryRequest, @MappingTarget Country country);
 }

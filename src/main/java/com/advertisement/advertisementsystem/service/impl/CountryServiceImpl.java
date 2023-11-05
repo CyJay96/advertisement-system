@@ -6,6 +6,7 @@ import com.advertisement.advertisementsystem.model.dto.request.CountryRequest;
 import com.advertisement.advertisementsystem.model.dto.response.CountryResponse;
 import com.advertisement.advertisementsystem.model.dto.response.PageResponse;
 import com.advertisement.advertisementsystem.model.entity.Country;
+import com.advertisement.advertisementsystem.model.enums.Status;
 import com.advertisement.advertisementsystem.repository.CountryRepository;
 import com.advertisement.advertisementsystem.service.CountryService;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,7 @@ public class CountryServiceImpl implements CountryService {
 
     @Override
     public PageResponse<CountryResponse> findAll(Pageable pageable) {
-        Page<Country> countryPage = countryRepository.findAll(pageable);
+        Page<Country> countryPage = countryRepository.findAllByStatus(Status.ACTIVE, pageable);
 
         List<CountryResponse> countryResponses = countryPage.stream()
                 .map(countryMapper::toCountryResponse)
@@ -62,10 +63,18 @@ public class CountryServiceImpl implements CountryService {
     }
 
     @Override
-    public void deleteById(Long id) {
-        if (!countryRepository.existsById(id)) {
-            throw new EntityNotFoundException(Country.class, id);
-        }
-        countryRepository.deleteById(id);
+    public CountryResponse restoreById(Long id) {
+        Country country = countryRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Country.class, id));
+        country.setStatus(Status.ACTIVE);
+        return countryMapper.toCountryResponse(countryRepository.save(country));
+    }
+
+    @Override
+    public CountryResponse deleteById(Long id) {
+        Country country = countryRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Country.class, id));
+        country.setStatus(Status.DELETED);
+        return countryMapper.toCountryResponse(countryRepository.save(country));
     }
 }

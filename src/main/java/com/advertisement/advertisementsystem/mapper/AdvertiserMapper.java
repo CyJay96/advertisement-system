@@ -14,6 +14,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 public interface AdvertiserMapper {
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "status", ignore = true)
     @Mapping(target = "campaigns", ignore = true)
     @Mapping(target = "createDate", expression = "java(java.time.OffsetDateTime.now())")
     @Mapping(target = "lastUpdateDate", expression = "java(java.time.OffsetDateTime.now())")
@@ -27,6 +28,7 @@ public interface AdvertiserMapper {
             nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS
     )
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "status", ignore = true)
     @Mapping(target = "campaigns", ignore = true)
     @Mapping(target = "lastUpdateDate", expression = "java(java.time.OffsetDateTime.now())")
     void updateAdvertiser(AdvertiserRequest advertiserRequest, @MappingTarget Advertiser advertiser);

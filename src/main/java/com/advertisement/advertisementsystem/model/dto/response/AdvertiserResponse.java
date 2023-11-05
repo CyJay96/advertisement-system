@@ -1,5 +1,6 @@
 package com.advertisement.advertisementsystem.model.dto.response;
 
+import com.advertisement.advertisementsystem.model.enums.Status;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -27,6 +28,9 @@ public class AdvertiserResponse implements Serializable {
 
     @JsonProperty(value = "pictureUrl")
     private String pictureUrl;
+
+    @JsonProperty(value = "status")
+    private Status status;
 
     @JsonProperty(value = "createDate")
     private OffsetDateTime createDate;

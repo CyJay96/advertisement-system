@@ -20,6 +20,7 @@ public interface CampaignMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "countries", ignore = true)
     @Mapping(target = "languages", ignore = true)
+    @Mapping(target = "status", ignore = true)
     @Mapping(target = "advertiser", ignore = true)
     @Mapping(target = "createDate", expression = "java(java.time.OffsetDateTime.now())")
     @Mapping(target = "lastUpdateDate", expression = "java(java.time.OffsetDateTime.now())")
@@ -38,6 +39,7 @@ public interface CampaignMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "countries", ignore = true)
     @Mapping(target = "languages", ignore = true)
+    @Mapping(target = "status", ignore = true)
     @Mapping(target = "advertiser", ignore = true)
     @Mapping(target = "lastUpdateDate", expression = "java(java.time.OffsetDateTime.now())")
     void updateCampaign(CampaignRequest campaignRequest, @MappingTarget Campaign campaign);

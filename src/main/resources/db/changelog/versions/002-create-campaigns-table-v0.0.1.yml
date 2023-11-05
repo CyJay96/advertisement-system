@@ -51,6 +51,14 @@ databaseChangeLog:
                     nullable: true
 
               - column:
+                  name: status
+                  type: varchar(255)
+                  defaultValue: ACTIVE
+                  constraints:
+                    checkConstraint: user_type in ('ACTIVE','DELETED')
+                    nullable: false
+
+              - column:
                   name: create_date
                   type: timestamp(6)
                   defaultValue: "NOW()"

@@ -9,6 +9,7 @@ import com.advertisement.advertisementsystem.model.dto.response.AdvertiserRespon
 import com.advertisement.advertisementsystem.model.dto.response.CampaignResponse;
 import com.advertisement.advertisementsystem.model.dto.response.PageResponse;
 import com.advertisement.advertisementsystem.model.entity.Advertiser;
+import com.advertisement.advertisementsystem.model.enums.Status;
 import com.advertisement.advertisementsystem.repository.AdvertiserRepository;
 import com.advertisement.advertisementsystem.repository.CampaignRepository;
 import com.advertisement.advertisementsystem.service.AdvertiserService;
@@ -40,7 +41,7 @@ public class AdvertiserServiceImpl implements AdvertiserService {
 
     @Override
     public PageResponse<AdvertiserResponse> findAll(Pageable pageable) {
-        Page<Advertiser> advertiserPage = advertiserRepository.findAll(pageable);
+        Page<Advertiser> advertiserPage = advertiserRepository.findAllByStatus(Status.ACTIVE, pageable);
 
         List<AdvertiserResponse> advertiserResponses = advertiserPage.stream()
                 .map(advertiserMapper::toAdvertiserResponse)
@@ -105,10 +106,18 @@ public class AdvertiserServiceImpl implements AdvertiserService {
     }
 
     @Override
-    public void deleteById(Long id) {
-        if (!advertiserRepository.existsById(id)) {
-            throw new EntityNotFoundException(Advertiser.class, id);
-        }
-        advertiserRepository.deleteById(id);
+    public AdvertiserResponse restoreById(Long id) {
+        Advertiser advertiser = advertiserRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Advertiser.class, id));
+        advertiser.setStatus(Status.ACTIVE);
+        return advertiserMapper.toAdvertiserResponse(advertiserRepository.save(advertiser));
+    }
+
+    @Override
+    public AdvertiserResponse deleteById(Long id) {
+        Advertiser advertiser = advertiserRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Advertiser.class, id));
+        advertiser.setStatus(Status.DELETED);
+        return advertiserMapper.toAdvertiserResponse(advertiserRepository.save(advertiser));
     }
 }

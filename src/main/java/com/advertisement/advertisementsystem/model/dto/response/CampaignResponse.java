@@ -1,5 +1,6 @@
 package com.advertisement.advertisementsystem.model.dto.response;
 
+import com.advertisement.advertisementsystem.model.enums.Status;
 import com.advertisement.advertisementsystem.model.enums.UserType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -38,6 +39,9 @@ public class CampaignResponse implements Serializable {
 
     @JsonProperty(value = "userType")
     private UserType userType;
+
+    @JsonProperty(value = "status")
+    private Status status;
 
     @JsonProperty(value = "createDate")
     private OffsetDateTime createDate;

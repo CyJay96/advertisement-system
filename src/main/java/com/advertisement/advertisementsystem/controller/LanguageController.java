@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -47,7 +48,8 @@ public class LanguageController {
     })
     @PostMapping
     public ResponseEntity<APIResponse<LanguageResponse>> save(
-            @RequestBody @Valid LanguageRequest languageRequest) {
+            @RequestBody @Valid LanguageRequest languageRequest
+    ) {
         LanguageResponse language = languageService.save(languageRequest);
 
         return APIResponse.of(
@@ -68,7 +70,8 @@ public class LanguageController {
 
         return APIResponse.of(
                 "All Language: page_number: " + pageable.getPageNumber() +
-                        "; page_size: " + pageable.getPageSize(),
+                        "; page_size: " + pageable.getPageSize() +
+                        "; page_sort: " + pageable.getSort(),
                 LANGUAGE_API_PATH,
                 HttpStatus.OK,
                 languages
@@ -100,12 +103,32 @@ public class LanguageController {
     @PutMapping("/{id}")
     public ResponseEntity<APIResponse<LanguageResponse>> update(
             @PathVariable @NotNull @PositiveOrZero Long id,
-            @RequestBody @Valid LanguageRequest languageRequest) {
+            @RequestBody @Valid LanguageRequest languageRequest
+    ) {
         LanguageResponse language = languageService.update(id, languageRequest);
 
         return APIResponse.of(
                 "Changes were applied to the Language with ID " + id,
                 LANGUAGE_API_PATH + "/" + id,
+                HttpStatus.OK,
+                language
+        );
+    }
+
+    @Operation(summary = "Restore Language by ID", tags = "LanguageController")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Restored Language by ID"),
+            @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
+    })
+    @PatchMapping("/restore/{id}")
+    public ResponseEntity<APIResponse<LanguageResponse>> restoreById(
+            @PathVariable @NotNull @PositiveOrZero Long id
+    ) {
+        LanguageResponse language = languageService.restoreById(id);
+
+        return APIResponse.of(
+                "Language with ID " + id + " were restored",
+                LANGUAGE_API_PATH + "/restore/" + id,
                 HttpStatus.OK,
                 language
         );
@@ -117,15 +140,16 @@ public class LanguageController {
             @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<APIResponse<Void>> deleteById(
-            @PathVariable @NotNull @PositiveOrZero Long id) {
-        languageService.deleteById(id);
+    public ResponseEntity<APIResponse<LanguageResponse>> deleteById(
+            @PathVariable @NotNull @PositiveOrZero Long id
+    ) {
+        LanguageResponse language = languageService.deleteById(id);
 
         return APIResponse.of(
                 "Language with ID " + id + " were deleted",
                 LANGUAGE_API_PATH + "/" + id,
                 HttpStatus.OK,
-                null
+                language
         );
     }
 }

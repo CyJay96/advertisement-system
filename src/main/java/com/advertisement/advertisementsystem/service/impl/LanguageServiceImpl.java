@@ -6,6 +6,7 @@ import com.advertisement.advertisementsystem.model.dto.request.LanguageRequest;
 import com.advertisement.advertisementsystem.model.dto.response.LanguageResponse;
 import com.advertisement.advertisementsystem.model.dto.response.PageResponse;
 import com.advertisement.advertisementsystem.model.entity.Language;
+import com.advertisement.advertisementsystem.model.enums.Status;
 import com.advertisement.advertisementsystem.repository.LanguageRepository;
 import com.advertisement.advertisementsystem.service.LanguageService;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,7 @@ public class LanguageServiceImpl implements LanguageService {
 
     @Override
     public PageResponse<LanguageResponse> findAll(Pageable pageable) {
-        Page<Language> languagePage = languageRepository.findAll(pageable);
+        Page<Language> languagePage = languageRepository.findAllByStatus(Status.ACTIVE, pageable);
 
         List<LanguageResponse> languageResponses = languagePage.stream()
                 .map(languageMapper::toLanguageResponse)
@@ -62,10 +63,18 @@ public class LanguageServiceImpl implements LanguageService {
     }
 
     @Override
-    public void deleteById(Long id) {
-        if (!languageRepository.existsById(id)) {
-            throw new EntityNotFoundException(Language.class, id);
-        }
-        languageRepository.deleteById(id);
+    public LanguageResponse restoreById(Long id) {
+        Language language = languageRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Language.class, id));
+        language.setStatus(Status.ACTIVE);
+        return languageMapper.toLanguageResponse(languageRepository.save(language));
+    }
+
+    @Override
+    public LanguageResponse deleteById(Long id) {
+        Language language = languageRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Language.class, id));
+        language.setStatus(Status.DELETED);
+        return languageMapper.toLanguageResponse(languageRepository.save(language));
     }
 }

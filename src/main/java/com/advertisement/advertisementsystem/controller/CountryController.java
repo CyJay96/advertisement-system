@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -47,7 +48,8 @@ public class CountryController {
     })
     @PostMapping
     public ResponseEntity<APIResponse<CountryResponse>> save(
-            @RequestBody @Valid CountryRequest countryRequest) {
+            @RequestBody @Valid CountryRequest countryRequest
+    ) {
         CountryResponse country = countryService.save(countryRequest);
 
         return APIResponse.of(
@@ -68,7 +70,8 @@ public class CountryController {
 
         return APIResponse.of(
                 "All Country: page_number: " + pageable.getPageNumber() +
-                        "; page_size: " + pageable.getPageSize(),
+                        "; page_size: " + pageable.getPageSize() +
+                        "; page_sort: " + pageable.getSort(),
                 COUNTRY_API_PATH,
                 HttpStatus.OK,
                 countries
@@ -100,12 +103,32 @@ public class CountryController {
     @PutMapping("/{id}")
     public ResponseEntity<APIResponse<CountryResponse>> update(
             @PathVariable @NotNull @PositiveOrZero Long id,
-            @RequestBody @Valid CountryRequest countryRequest) {
+            @RequestBody @Valid CountryRequest countryRequest
+    ) {
         CountryResponse country = countryService.update(id, countryRequest);
 
         return APIResponse.of(
                 "Changes were applied to the Country with ID " + id,
                 COUNTRY_API_PATH + "/" + id,
+                HttpStatus.OK,
+                country
+        );
+    }
+
+    @Operation(summary = "Restore Country by ID", tags = "CountryController")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Restored Country by ID"),
+            @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
+    })
+    @PatchMapping("/restore/{id}")
+    public ResponseEntity<APIResponse<CountryResponse>> restoreById(
+            @PathVariable @NotNull @PositiveOrZero Long id
+    ) {
+        CountryResponse country = countryService.restoreById(id);
+
+        return APIResponse.of(
+                "Country with ID " + id + " were restored",
+                COUNTRY_API_PATH + "/restore/" + id,
                 HttpStatus.OK,
                 country
         );
@@ -117,15 +140,16 @@ public class CountryController {
             @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<APIResponse<Void>> deleteById(
-            @PathVariable @NotNull @PositiveOrZero Long id) {
-        countryService.deleteById(id);
+    public ResponseEntity<APIResponse<CountryResponse>> deleteById(
+            @PathVariable @NotNull @PositiveOrZero Long id
+    ) {
+        CountryResponse country = countryService.deleteById(id);
 
         return APIResponse.of(
                 "Country with ID " + id + " were deleted",
                 COUNTRY_API_PATH + "/" + id,
                 HttpStatus.OK,
-                null
+                country
         );
     }
 }

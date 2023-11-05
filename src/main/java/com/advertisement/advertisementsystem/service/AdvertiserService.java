@@ -18,5 +18,7 @@ public interface AdvertiserService {
 
     AdvertiserResponse update(Long id, AdvertiserRequest advertiserRequest);
 
-    void deleteById(Long id);
+    AdvertiserResponse restoreById(Long id);
+
+    AdvertiserResponse deleteById(Long id);
 }

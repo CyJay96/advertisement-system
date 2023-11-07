@@ -6,14 +6,18 @@ import com.advertisement.advertisementsystem.model.dto.request.UserRequest;
 import com.advertisement.advertisementsystem.model.dto.response.PageResponse;
 import com.advertisement.advertisementsystem.model.dto.response.UserResponse;
 import com.advertisement.advertisementsystem.model.entity.User;
+import com.advertisement.advertisementsystem.model.enums.Role;
 import com.advertisement.advertisementsystem.model.enums.Status;
 import com.advertisement.advertisementsystem.repository.UserRepository;
 import com.advertisement.advertisementsystem.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
 import java.util.List;
 
 @Service
@@ -24,6 +28,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
 
     @Override
+    @Transactional
     public PageResponse<UserResponse> findAll(Pageable pageable) {
         Page<User> userPage = userRepository.findAll(pageable);
 
@@ -40,32 +45,41 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse findById(Long id) {
-        return userRepository.findById(id)
-                .map(userMapper::toUserResponse)
-                .orElseThrow(() -> new EntityNotFoundException(User.class, id));
-    }
-
-    @Override
-    public UserResponse findByUsername(String username) {
-        return userMapper.toUserResponse(findEntityByUsername(username));
-    }
-
-    @Override
-    public User findEntityByUsername(String username) {
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new EntityNotFoundException(User.class.getSimpleName()));
-    }
-
-    @Override
-    public UserResponse update(Long id, UserRequest userRequest) {
+    @Transactional
+    public UserResponse findById(Long id, Principal principal) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(User.class, id));
+        checkUserForPermissions(user, principal);
+        return userMapper.toUserResponse(userRepository.save(user));
+    }
+
+    @Override
+    @Transactional
+    public UserResponse findByUsername(String username, Principal principal) {
+        User user = findEntityByUsername(username);
+        checkUserForPermissions(user, principal);
+        return userMapper.toUserResponse(user);
+    }
+
+    @Override
+    @Transactional
+    public User findEntityByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException(User.class, username));
+    }
+
+    @Override
+    @Transactional
+    public UserResponse update(Long id, UserRequest userRequest, Principal principal) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(User.class, id));
+        checkUserForPermissions(user, principal);
         userMapper.updateUser(userRequest, user);
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
     @Override
+    @Transactional
     public UserResponse restoreById(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(User.class, id));
@@ -74,10 +88,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserResponse deleteById(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(User.class, id));
         user.setStatus(Status.DELETED);
         return userMapper.toUserResponse(userRepository.save(user));
+    }
+
+    private void checkUserForPermissions(User userByRequest, Principal principal) {
+        User userPrincipal = findEntityByUsername(principal.getName());
+
+        if (!userByRequest.getUsername().equals(principal.getName()) &&
+                userPrincipal.getRoles().stream().noneMatch(role -> role.getName().equals(Role.ROLE_ADMIN.name()))
+        ) {
+            throw new AccessDeniedException("Access is forbidden for this role");
+        }
     }
 }

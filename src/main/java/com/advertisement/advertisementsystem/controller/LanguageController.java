@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -18,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,6 +36,7 @@ import static com.advertisement.advertisementsystem.controller.LanguageControlle
 @Validated
 @RestController
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 @RequestMapping(value = LANGUAGE_API_PATH)
 @Tag(name = "LanguageController", description = "Language API")
 public class LanguageController {
@@ -44,9 +47,13 @@ public class LanguageController {
 
     @Operation(summary = "Save Language", tags = "LanguageController")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Saved Language")
+            @ApiResponse(responseCode = "201", description = "Saved Language"),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
+            @ApiResponse(responseCode = "401", description = "Access is forbidden to unauthorized users", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
+            @ApiResponse(responseCode = "403", description = "Access is forbidden for this role", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
     })
     @PostMapping
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<APIResponse<LanguageResponse>> save(
             @RequestBody @Valid LanguageRequest languageRequest
     ) {
@@ -62,9 +69,12 @@ public class LanguageController {
 
     @Operation(summary = "Find all Countries", tags = "LanguageController")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Found all Countries")
+            @ApiResponse(responseCode = "200", description = "Found all Countries"),
+            @ApiResponse(responseCode = "401", description = "Access is forbidden to unauthorized users", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
+            @ApiResponse(responseCode = "403", description = "Access is forbidden for this role", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
     })
     @GetMapping
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<APIResponse<PageResponse<LanguageResponse>>> findAll(Pageable pageable) {
         PageResponse<LanguageResponse> languages = languageService.findAll(pageable);
 
@@ -81,9 +91,12 @@ public class LanguageController {
     @Operation(summary = "Find Language by ID", tags = "LanguageController")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found Language by ID"),
+            @ApiResponse(responseCode = "401", description = "Access is forbidden to unauthorized users", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
+            @ApiResponse(responseCode = "403", description = "Access is forbidden for this role", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
             @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
     })
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<APIResponse<LanguageResponse>> findById(@PathVariable @NotNull @PositiveOrZero Long id) {
         LanguageResponse language = languageService.findById(id);
 
@@ -98,9 +111,13 @@ public class LanguageController {
     @Operation(summary = "Update Language by ID", tags = "LanguageController")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Updated Language by ID"),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
+            @ApiResponse(responseCode = "401", description = "Access is forbidden to unauthorized users", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
+            @ApiResponse(responseCode = "403", description = "Access is forbidden for this role", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
             @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
     })
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<APIResponse<LanguageResponse>> update(
             @PathVariable @NotNull @PositiveOrZero Long id,
             @RequestBody @Valid LanguageRequest languageRequest
@@ -118,9 +135,11 @@ public class LanguageController {
     @Operation(summary = "Restore Language by ID", tags = "LanguageController")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Restored Language by ID"),
+            @ApiResponse(responseCode = "401", description = "Access is forbidden to unauthorized users", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
             @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
     })
     @PatchMapping("/restore/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<APIResponse<LanguageResponse>> restoreById(
             @PathVariable @NotNull @PositiveOrZero Long id
     ) {
@@ -137,9 +156,11 @@ public class LanguageController {
     @Operation(summary = "Delete Language by ID", tags = "LanguageController")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Deleted Language by ID"),
+            @ApiResponse(responseCode = "401", description = "Access is forbidden to unauthorized users", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
             @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
     })
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<APIResponse<LanguageResponse>> deleteById(
             @PathVariable @NotNull @PositiveOrZero Long id
     ) {

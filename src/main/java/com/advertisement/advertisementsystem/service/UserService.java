@@ -6,17 +6,19 @@ import com.advertisement.advertisementsystem.model.dto.response.UserResponse;
 import com.advertisement.advertisementsystem.model.entity.User;
 import org.springframework.data.domain.Pageable;
 
+import java.security.Principal;
+
 public interface UserService {
 
     PageResponse<UserResponse> findAll(Pageable pageable);
 
-    UserResponse findById(Long id);
+    UserResponse findById(Long id, Principal principal);
 
-    UserResponse findByUsername(String username);
+    UserResponse findByUsername(String username, Principal principal);
 
     User findEntityByUsername(String username);
 
-    UserResponse update(Long id, UserRequest userRequest);
+    UserResponse update(Long id, UserRequest userRequest, Principal principal);
 
     UserResponse restoreById(Long id);
 

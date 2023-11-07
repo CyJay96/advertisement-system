@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -18,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,6 +36,7 @@ import static com.advertisement.advertisementsystem.controller.CountryController
 @Validated
 @RestController
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 @RequestMapping(value = COUNTRY_API_PATH)
 @Tag(name = "CountryController", description = "Country API")
 public class CountryController {
@@ -44,9 +47,13 @@ public class CountryController {
 
     @Operation(summary = "Save Country", tags = "CountryController")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Saved Country")
+            @ApiResponse(responseCode = "201", description = "Saved Country"),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
+            @ApiResponse(responseCode = "401", description = "Access is forbidden to unauthorized users", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
+            @ApiResponse(responseCode = "403", description = "Access is forbidden for this role", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
     })
     @PostMapping
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<APIResponse<CountryResponse>> save(
             @RequestBody @Valid CountryRequest countryRequest
     ) {
@@ -62,9 +69,12 @@ public class CountryController {
 
     @Operation(summary = "Find all Countries", tags = "CountryController")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Found all Countries")
+            @ApiResponse(responseCode = "200", description = "Found all Countries"),
+            @ApiResponse(responseCode = "401", description = "Access is forbidden to unauthorized users", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
+            @ApiResponse(responseCode = "403", description = "Access is forbidden for this role", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
     })
     @GetMapping
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<APIResponse<PageResponse<CountryResponse>>> findAll(Pageable pageable) {
         PageResponse<CountryResponse> countries = countryService.findAll(pageable);
 
@@ -81,9 +91,12 @@ public class CountryController {
     @Operation(summary = "Find Country by ID", tags = "CountryController")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found Country by ID"),
+            @ApiResponse(responseCode = "401", description = "Access is forbidden to unauthorized users", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
+            @ApiResponse(responseCode = "403", description = "Access is forbidden for this role", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
             @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
     })
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<APIResponse<CountryResponse>> findById(@PathVariable @NotNull @PositiveOrZero Long id) {
         CountryResponse country = countryService.findById(id);
 
@@ -98,9 +111,13 @@ public class CountryController {
     @Operation(summary = "Update Country by ID", tags = "CountryController")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Updated Country by ID"),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
+            @ApiResponse(responseCode = "401", description = "Access is forbidden to unauthorized users", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
+            @ApiResponse(responseCode = "403", description = "Access is forbidden for this role", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
             @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
     })
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<APIResponse<CountryResponse>> update(
             @PathVariable @NotNull @PositiveOrZero Long id,
             @RequestBody @Valid CountryRequest countryRequest
@@ -118,9 +135,11 @@ public class CountryController {
     @Operation(summary = "Restore Country by ID", tags = "CountryController")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Restored Country by ID"),
+            @ApiResponse(responseCode = "401", description = "Access is forbidden to unauthorized users", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
             @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
     })
     @PatchMapping("/restore/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<APIResponse<CountryResponse>> restoreById(
             @PathVariable @NotNull @PositiveOrZero Long id
     ) {
@@ -137,9 +156,11 @@ public class CountryController {
     @Operation(summary = "Delete Country by ID", tags = "CountryController")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Deleted Country by ID"),
+            @ApiResponse(responseCode = "401", description = "Access is forbidden to unauthorized users", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
             @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
     })
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<APIResponse<CountryResponse>> deleteById(
             @PathVariable @NotNull @PositiveOrZero Long id
     ) {

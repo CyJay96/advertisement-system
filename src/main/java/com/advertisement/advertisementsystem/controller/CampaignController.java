@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,6 +39,7 @@ import static com.advertisement.advertisementsystem.controller.CampaignControlle
 @Validated
 @RestController
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 @RequestMapping(value = CAMPAIGN_API_PATH)
 @Tag(name = "CampaignController", description = "Campaign API")
 public class CampaignController {
@@ -47,12 +50,17 @@ public class CampaignController {
 
     @Operation(summary = "Save Campaign", tags = "CampaignController")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Saved Campaign")
+            @ApiResponse(responseCode = "201", description = "Saved Campaign"),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
+            @ApiResponse(responseCode = "401", description = "Access is forbidden to unauthorized users", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
+            @ApiResponse(responseCode = "403", description = "Access is forbidden for this role", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
     })
     @PostMapping("/{advertiserId}")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<APIResponse<CampaignResponse>> saveByAdvertiserId(
             @PathVariable @NotNull @PositiveOrZero Long advertiserId,
-            @RequestBody @Valid CampaignRequest campaignRequest) {
+            @RequestBody @Valid CampaignRequest campaignRequest
+    ) {
         CampaignResponse campaign = campaignService.save(advertiserId, campaignRequest);
 
         return APIResponse.of(
@@ -65,15 +73,19 @@ public class CampaignController {
 
     @Operation(summary = "Find all Campaigns", tags = "CampaignController")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Found all Campaigns")
+            @ApiResponse(responseCode = "200", description = "Found all Campaigns"),
+            @ApiResponse(responseCode = "401", description = "Access is forbidden to unauthorized users", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
+            @ApiResponse(responseCode = "403", description = "Access is forbidden for this role", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
     })
     @GetMapping
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<APIResponse<PageResponse<CampaignResponse>>> findAll(Pageable pageable) {
         PageResponse<CampaignResponse> campaigns = campaignService.findAll(pageable);
 
         return APIResponse.of(
                 "All Campaigns: page_number: " + pageable.getPageNumber() +
-                        "; page_size: " + pageable.getPageSize(),
+                        "; page_size: " + pageable.getPageSize() +
+                        "; page_sort: " + pageable.getSort(),
                 CAMPAIGN_API_PATH,
                 HttpStatus.OK,
                 campaigns
@@ -82,12 +94,17 @@ public class CampaignController {
 
     @Operation(summary = "Find all Campaigns by Criteria", tags = "CampaignController")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Found all Campaigns by Criteria")
+            @ApiResponse(responseCode = "200", description = "Found all Campaigns by Criteria"),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
+            @ApiResponse(responseCode = "401", description = "Access is forbidden to unauthorized users", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
+            @ApiResponse(responseCode = "403", description = "Access is forbidden for this role", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
     })
     @GetMapping("/criteria")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<APIResponse<PageResponse<CampaignResponse>>> findAllByCriteria(
-            @RequestBody(required = false) CampaignCriteria searchCriteria,
-            Pageable pageable) {
+            @RequestBody(required = false) @Valid CampaignCriteria searchCriteria,
+            Pageable pageable
+    ) {
         searchCriteria = Objects.requireNonNullElse(searchCriteria, CampaignCriteria.builder().build());
         PageResponse<CampaignResponse> campaigns = campaignService.findAllByCriteria(searchCriteria, pageable);
 
@@ -96,7 +113,8 @@ public class CampaignController {
                         "; description: " + searchCriteria.getDescription() +
                         "; location: " + searchCriteria.getLocation() +
                         "; page_number: " + pageable.getPageNumber() +
-                        "; page_size: " + pageable.getPageSize(),
+                        "; page_size: " + pageable.getPageSize() +
+                        "; page_sort: " + pageable.getSort(),
                 CAMPAIGN_API_PATH + "/criteria",
                 HttpStatus.OK,
                 campaigns
@@ -106,9 +124,12 @@ public class CampaignController {
     @Operation(summary = "Find Campaign by ID", tags = "CampaignController")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found Campaign by ID"),
+            @ApiResponse(responseCode = "401", description = "Access is forbidden to unauthorized users", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
+            @ApiResponse(responseCode = "403", description = "Access is forbidden for this role", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
             @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
     })
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<APIResponse<CampaignResponse>> findById(@PathVariable @NotNull @PositiveOrZero Long id) {
         CampaignResponse campaign = campaignService.findById(id);
 
@@ -123,12 +144,17 @@ public class CampaignController {
     @Operation(summary = "Update Campaign by ID", tags = "CampaignController")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Updated Campaign by ID"),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
+            @ApiResponse(responseCode = "401", description = "Access is forbidden to unauthorized users", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
+            @ApiResponse(responseCode = "403", description = "Access is forbidden for this role", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
             @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
     })
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<APIResponse<CampaignResponse>> update(
             @PathVariable @NotNull @PositiveOrZero Long id,
-            @RequestBody @Valid CampaignRequest campaignRequest) {
+            @RequestBody @Valid CampaignRequest campaignRequest
+    ) {
         CampaignResponse campaign = campaignService.update(id, campaignRequest);
 
         return APIResponse.of(
@@ -142,12 +168,17 @@ public class CampaignController {
     @Operation(summary = "Partial Update Campaign by ID", tags = "CampaignController")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Partial Updated Campaign by ID"),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
+            @ApiResponse(responseCode = "401", description = "Access is forbidden to unauthorized users", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
+            @ApiResponse(responseCode = "403", description = "Access is forbidden for this role", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
             @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
     })
     @PatchMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<APIResponse<CampaignResponse>> updatePartially(
             @PathVariable @NotNull @PositiveOrZero Long id,
-            @RequestBody CampaignRequest campaignRequest) {
+            @RequestBody CampaignRequest campaignRequest
+    ) {
         CampaignResponse campaign = campaignService.update(id, campaignRequest);
 
         return APIResponse.of(
@@ -158,21 +189,45 @@ public class CampaignController {
         );
     }
 
+    @Operation(summary = "Restore Campaign by ID", tags = "CampaignController")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Restored Campaign by ID"),
+            @ApiResponse(responseCode = "401", description = "Access is forbidden to unauthorized users", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
+            @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
+    })
+    @PatchMapping("/restore/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<APIResponse<CampaignResponse>> restoreById(
+            @PathVariable @NotNull @PositiveOrZero Long id
+    ) {
+        CampaignResponse campaign = campaignService.restoreById(id);
+
+        return APIResponse.of(
+                "Campaign with ID " + id + " was restored",
+                CAMPAIGN_API_PATH + "/restore/" + id,
+                HttpStatus.OK,
+                campaign
+        );
+    }
+
     @Operation(summary = "Delete Campaign by ID", tags = "CampaignController")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Deleted Campaign by ID"),
+            @ApiResponse(responseCode = "401", description = "Access is forbidden to unauthorized users", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
             @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<APIResponse<Void>> deleteById(
-            @PathVariable @NotNull @PositiveOrZero Long id) {
-        campaignService.deleteById(id);
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<APIResponse<CampaignResponse>> deleteById(
+            @PathVariable @NotNull @PositiveOrZero Long id
+    ) {
+        CampaignResponse campaign = campaignService.deleteById(id);
 
         return APIResponse.of(
                 "Campaign with ID " + id + " was deleted",
                 CAMPAIGN_API_PATH + "/" + id,
                 HttpStatus.OK,
-                null
+                campaign
         );
     }
 }

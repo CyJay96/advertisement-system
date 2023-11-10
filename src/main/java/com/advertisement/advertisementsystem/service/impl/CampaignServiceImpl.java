@@ -10,6 +10,7 @@ import com.advertisement.advertisementsystem.model.entity.Advertiser;
 import com.advertisement.advertisementsystem.model.entity.Campaign;
 import com.advertisement.advertisementsystem.model.entity.Country;
 import com.advertisement.advertisementsystem.model.entity.Language;
+import com.advertisement.advertisementsystem.model.enums.Status;
 import com.advertisement.advertisementsystem.repository.AdvertiserRepository;
 import com.advertisement.advertisementsystem.repository.CampaignRepository;
 import com.advertisement.advertisementsystem.repository.CountryRepository;
@@ -57,7 +58,7 @@ public class CampaignServiceImpl implements CampaignService {
 
     @Override
     public PageResponse<CampaignResponse> findAll(Pageable pageable) {
-        Page<Campaign> campaignPage = campaignRepository.findAll(pageable);
+        Page<Campaign> campaignPage = campaignRepository.findAllByStatus(Status.ACTIVE, pageable);
 
         List<CampaignResponse> campaignResponses = campaignPage.stream()
                 .map(campaignMapper::toCampaignResponse)
@@ -116,10 +117,18 @@ public class CampaignServiceImpl implements CampaignService {
     }
 
     @Override
-    public void deleteById(Long id) {
-        if (!campaignRepository.existsById(id)) {
-            throw new EntityNotFoundException(Campaign.class, id);
-        }
-        campaignRepository.deleteById(id);
+    public CampaignResponse restoreById(Long id) {
+        Campaign campaign = campaignRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Campaign.class, id));
+        campaign.setStatus(Status.ACTIVE);
+        return campaignMapper.toCampaignResponse(campaignRepository.save(campaign));
+    }
+
+    @Override
+    public CampaignResponse deleteById(Long id) {
+        Campaign campaign = campaignRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Campaign.class, id));
+        campaign.setStatus(Status.DELETED);
+        return campaignMapper.toCampaignResponse(campaignRepository.save(campaign));
     }
 }

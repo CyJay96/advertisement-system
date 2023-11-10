@@ -18,5 +18,7 @@ public interface CampaignService {
 
     CampaignResponse update(Long id, CampaignRequest campaignRequest);
 
-    void deleteById(Long id);
+    CampaignResponse restoreById(Long id);
+
+    CampaignResponse deleteById(Long id);
 }

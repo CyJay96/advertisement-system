@@ -15,5 +15,7 @@ public interface LanguageService {
 
     LanguageResponse update(Long id, LanguageRequest languageRequest);
 
-    void deleteById(Long id);
+    LanguageResponse restoreById(Long id);
+
+    LanguageResponse deleteById(Long id);
 }

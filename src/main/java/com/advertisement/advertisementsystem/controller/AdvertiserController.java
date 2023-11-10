@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,6 +39,7 @@ import static com.advertisement.advertisementsystem.controller.AdvertiserControl
 @Validated
 @RestController
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 @RequestMapping(value = ADVERTISER_API_PATH)
 @Tag(name = "AdvertiserController", description = "Advertiser API")
 public class AdvertiserController {
@@ -47,11 +50,16 @@ public class AdvertiserController {
 
     @Operation(summary = "Save Advertiser", tags = "AdvertiserController")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Saved Advertiser")
+            @ApiResponse(responseCode = "201", description = "Saved Advertiser"),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
+            @ApiResponse(responseCode = "401", description = "Access is forbidden to unauthorized users", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
+            @ApiResponse(responseCode = "403", description = "Access is forbidden for this role", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
     })
     @PostMapping
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<APIResponse<AdvertiserResponse>> save(
-            @RequestBody @Valid AdvertiserRequest advertiserRequest) {
+            @RequestBody @Valid AdvertiserRequest advertiserRequest
+    ) {
         AdvertiserResponse advertiser = advertiserService.save(advertiserRequest);
 
         return APIResponse.of(
@@ -64,15 +72,19 @@ public class AdvertiserController {
 
     @Operation(summary = "Find all Advertiser", tags = "AdvertiserController")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Found all Advertiser")
+            @ApiResponse(responseCode = "200", description = "Found all Advertiser"),
+            @ApiResponse(responseCode = "401", description = "Access is forbidden to unauthorized users", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
+            @ApiResponse(responseCode = "403", description = "Access is forbidden for this role", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
     })
     @GetMapping
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<APIResponse<PageResponse<AdvertiserResponse>>> findAll(Pageable pageable) {
         PageResponse<AdvertiserResponse> advertiser = advertiserService.findAll(pageable);
 
         return APIResponse.of(
                 "All Advertiser: page_number: " + pageable.getPageNumber() +
-                        "; page_size: " + pageable.getPageSize(),
+                        "; page_size: " + pageable.getPageSize() +
+                        "; page_sort: " + pageable.getSort(),
                 ADVERTISER_API_PATH,
                 HttpStatus.OK,
                 advertiser
@@ -81,12 +93,17 @@ public class AdvertiserController {
 
     @Operation(summary = "Find all Advertiser by Criteria", tags = "AdvertiserController")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Found all Advertiser by Criteria")
+            @ApiResponse(responseCode = "200", description = "Found all Advertiser by Criteria"),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
+            @ApiResponse(responseCode = "401", description = "Access is forbidden to unauthorized users", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
+            @ApiResponse(responseCode = "403", description = "Access is forbidden for this role", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
     })
     @GetMapping("/criteria")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<APIResponse<PageResponse<AdvertiserResponse>>> findAllByCriteria(
-            @RequestBody(required = false) AdvertiserCriteria searchCriteria,
-            Pageable pageable) {
+            @RequestBody(required = false) @Valid AdvertiserCriteria searchCriteria,
+            Pageable pageable
+    ) {
         searchCriteria = Objects.requireNonNullElse(searchCriteria, AdvertiserCriteria.builder().build());
         PageResponse<AdvertiserResponse> advertiser = advertiserService.findAllByCriteria(searchCriteria, pageable);
 
@@ -95,7 +112,8 @@ public class AdvertiserController {
                         "; description: " + searchCriteria.getDescription() +
                         "; location: " + searchCriteria.getLocation() +
                         "; page_number: " + pageable.getPageNumber() +
-                        "; page_size: " + pageable.getPageSize(),
+                        "; page_size: " + pageable.getPageSize() +
+                        "; page_sort: " + pageable.getSort(),
                 ADVERTISER_API_PATH + "/criteria",
                 HttpStatus.OK,
                 advertiser
@@ -105,17 +123,23 @@ public class AdvertiserController {
     @Operation(summary = "Find Advertiser by ID", tags = "AdvertiserController")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found Advertiser by ID"),
+            @ApiResponse(responseCode = "401", description = "Access is forbidden to unauthorized users", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
+            @ApiResponse(responseCode = "403", description = "Access is forbidden for this role", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
             @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
     })
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<APIResponse<AdvertiserResponse>> findById(
             @PathVariable @NotNull @PositiveOrZero Long id,
-            Pageable pageable) {
+            Pageable pageable
+    ) {
         AdvertiserResponse advertiser = advertiserService.findById(id, pageable);
 
         return APIResponse.of(
-                "Advertiser with ID " + advertiser.getId() + " were found: page_number: " +
-                        pageable.getPageNumber() + "; page_size: " + pageable.getPageSize(),
+                "Advertiser with ID " + advertiser.getId() +
+                        " were found: page_number: " + pageable.getPageNumber() +
+                        "; page_size: " + pageable.getPageSize() +
+                        "; page_sort: " + pageable.getSort(),
                 ADVERTISER_API_PATH + "/" + id,
                 HttpStatus.OK,
                 advertiser
@@ -125,12 +149,17 @@ public class AdvertiserController {
     @Operation(summary = "Update Advertiser by ID", tags = "AdvertiserController")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Updated Advertiser by ID"),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
+            @ApiResponse(responseCode = "401", description = "Access is forbidden to unauthorized users", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
+            @ApiResponse(responseCode = "403", description = "Access is forbidden for this role", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
             @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
     })
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<APIResponse<AdvertiserResponse>> update(
             @PathVariable @NotNull @PositiveOrZero Long id,
-            @RequestBody @Valid AdvertiserRequest advertiserRequest) {
+            @RequestBody @Valid AdvertiserRequest advertiserRequest
+    ) {
         AdvertiserResponse advertiser = advertiserService.update(id, advertiserRequest);
 
         return APIResponse.of(
@@ -144,12 +173,17 @@ public class AdvertiserController {
     @Operation(summary = "Partial Update Advertiser by ID", tags = "AdvertiserController")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Partial Updated Advertiser by ID"),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
+            @ApiResponse(responseCode = "401", description = "Access is forbidden to unauthorized users", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
+            @ApiResponse(responseCode = "403", description = "Access is forbidden for this role", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
             @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
     })
     @PatchMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<APIResponse<AdvertiserResponse>> updatePartially(
             @PathVariable @NotNull @PositiveOrZero Long id,
-            @RequestBody AdvertiserRequest advertiserRequest) {
+            @RequestBody AdvertiserRequest advertiserRequest
+    ) {
         AdvertiserResponse advertiser = advertiserService.update(id, advertiserRequest);
 
         return APIResponse.of(
@@ -160,21 +194,45 @@ public class AdvertiserController {
         );
     }
 
+    @Operation(summary = "Restore Advertiser by ID", tags = "AdvertiserController")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Restored Advertiser by ID"),
+            @ApiResponse(responseCode = "401", description = "Access is forbidden to unauthorized users", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
+            @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
+    })
+    @PatchMapping("/restore/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<APIResponse<AdvertiserResponse>> restoreById(
+            @PathVariable @NotNull @PositiveOrZero Long id
+    ) {
+        AdvertiserResponse advertiser = advertiserService.restoreById(id);
+
+        return APIResponse.of(
+                "Advertiser with ID " + id + " were restored",
+                ADVERTISER_API_PATH + "/restore/" + id,
+                HttpStatus.OK,
+                advertiser
+        );
+    }
+
     @Operation(summary = "Delete Advertiser by ID", tags = "AdvertiserController")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Deleted Advertiser by ID"),
+            @ApiResponse(responseCode = "401", description = "Access is forbidden to unauthorized users", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
             @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<APIResponse<Void>> deleteById(
-            @PathVariable @NotNull @PositiveOrZero Long id) {
-        advertiserService.deleteById(id);
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<APIResponse<AdvertiserResponse>> deleteById(
+            @PathVariable @NotNull @PositiveOrZero Long id
+    ) {
+        AdvertiserResponse advertiser = advertiserService.deleteById(id);
 
         return APIResponse.of(
                 "Advertiser with ID " + id + " were deleted",
                 ADVERTISER_API_PATH + "/" + id,
                 HttpStatus.OK,
-                null
+                advertiser
         );
     }
 }

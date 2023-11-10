@@ -24,3 +24,11 @@ databaseChangeLog:
                   type: varchar(255)
                   constraints:
                     nullable: false
+
+              - column:
+                  name: status
+                  type: varchar(255)
+                  defaultValue: ACTIVE
+                  constraints:
+                    checkConstraint: user_type in ('ACTIVE','DELETED')
+                    nullable: false

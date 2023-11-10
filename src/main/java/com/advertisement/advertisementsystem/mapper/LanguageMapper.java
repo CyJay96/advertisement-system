@@ -14,6 +14,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 public interface LanguageMapper {
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "status", ignore = true)
     Language toLanguage(LanguageRequest languageRequest);
 
     LanguageResponse toLanguageResponse(Language language);
@@ -23,5 +24,6 @@ public interface LanguageMapper {
             nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS
     )
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "status", ignore = true)
     void updateLanguage(LanguageRequest languageRequest, @MappingTarget Language language);
 }

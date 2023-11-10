@@ -39,3 +39,19 @@ VALUES
     (2, 3),
     (3, 1),
     (3, 3);
+
+INSERT INTO roles(name)
+VALUES
+    ('ROLE_USER'),
+    ('ROLE_ADMIN');
+
+INSERT INTO users(username, email, password)
+VALUES -- password: admin
+    ('Konstantin', 'konstantin@example.com', '$2a$10$ceUd7J//WqfLdJzmiqqRA.vX6jEdQLl8ynOFBcbNYrD2csp7VUKRS'),
+    ('Daniil', 'daniil@example.com', '$2a$10$ceUd7J//WqfLdJzmiqqRA.vX6jEdQLl8ynOFBcbNYrD2csp7VUKRS');
+
+INSERT INTO user_roles(user_id, role_id)
+VALUES
+    (1, 1),
+    (1, 2),
+    (2, 1);

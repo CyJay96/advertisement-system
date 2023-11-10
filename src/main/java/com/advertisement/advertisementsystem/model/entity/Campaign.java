@@ -1,5 +1,6 @@
 package com.advertisement.advertisementsystem.model.entity;
 
+import com.advertisement.advertisementsystem.model.enums.Status;
 import com.advertisement.advertisementsystem.model.enums.UserType;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -32,8 +33,8 @@ import java.util.List;
 @Entity
 @Table(name = "campaigns")
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 @EqualsAndHashCode
@@ -73,6 +74,9 @@ public class Campaign implements BaseEntity<Long> {
 
     @Enumerated(value = EnumType.STRING)
     private UserType userType;
+
+    @Enumerated(value = EnumType.STRING)
+    private Status status;
 
     @CreatedDate
     @Builder.Default

@@ -1,7 +1,10 @@
 package com.advertisement.advertisementsystem.model.entity;
 
+import com.advertisement.advertisementsystem.model.enums.Status;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -25,8 +28,8 @@ import java.util.List;
 @Entity
 @Table(name = "advertisers")
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 @EqualsAndHashCode
@@ -45,6 +48,9 @@ public class Advertiser implements BaseEntity<Long> {
     private String location;
 
     private String pictureUrl;
+
+    @Enumerated(value = EnumType.STRING)
+    private Status status;
 
     @CreatedDate
     @Builder.Default

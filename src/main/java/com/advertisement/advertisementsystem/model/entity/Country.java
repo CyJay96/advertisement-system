@@ -1,6 +1,9 @@
 package com.advertisement.advertisementsystem.model.entity;
 
+import com.advertisement.advertisementsystem.model.enums.Status;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -16,8 +19,8 @@ import lombok.ToString;
 @Entity
 @Table(name = "countries")
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 @EqualsAndHashCode
@@ -30,4 +33,7 @@ public class Country implements BaseEntity<Long> {
     private Long id;
 
     private String name;
+
+    @Enumerated(value = EnumType.STRING)
+    private Status status;
 }

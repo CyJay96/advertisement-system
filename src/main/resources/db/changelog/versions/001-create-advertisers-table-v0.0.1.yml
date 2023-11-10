@@ -1,0 +1,66 @@
+databaseChangeLog:
+  - preConditions:
+      - runningAs:
+          username: postgres
+
+  - changeSet:
+      id: 001v0.0.1
+      author: github.com/CyJay96
+      comment: Create ADVERTISERS table
+      changes:
+        - createTable:
+            tableName: advertisers
+            columns:
+              - column:
+                  name: id
+                  type: bigserial
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: title
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: description
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+
+              - column:
+                  name: location
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+
+              - column:
+                  name: picture_url
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+
+              - column:
+                  name: status
+                  type: varchar(255)
+                  defaultValue: ACTIVE
+                  constraints:
+                    checkConstraint: user_type in ('ACTIVE','DELETED')
+                    nullable: false
+
+              - column:
+                  name: create_date
+                  type: timestamp(6)
+                  defaultValue: "NOW()"
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: last_update_date
+                  type: timestamp(6)
+                  defaultValue: "NOW()"
+                  constraints:
+                    nullable: false

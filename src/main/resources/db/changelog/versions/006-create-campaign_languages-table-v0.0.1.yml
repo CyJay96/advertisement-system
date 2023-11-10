@@ -1,0 +1,24 @@
+databaseChangeLog:
+  - preConditions:
+      - runningAs:
+          username: postgres
+
+  - changeSet:
+      id: 006v0.0.1
+      author: github.com/CyJay96
+      comment: Create CAMPAIGNS_LANGUAGES table
+      changes:
+        - createTable:
+            tableName: campaign_languages
+            columns:
+              - column:
+                  name: campaign_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: language_id
+                  type: bigint
+                  constraints:
+                    nullable: false

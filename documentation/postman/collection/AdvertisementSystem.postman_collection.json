@@ -1,0 +1,1099 @@
+{
+	"info": {
+		"_postman_id": "fe8ed19a-5a72-41a3-9e0a-a8890236330a",
+		"name": "AdvertisementSystem",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22750065"
+	},
+	"item": [
+		{
+			"name": "Advertiser",
+			"item": [
+				{
+					"name": "Save",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"test title\",\r\n    \"description\": \"test description\",\r\n    \"location\": \"test location\",\r\n    \"pictureUrl\": \"test picture url\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostUrl}}/api/v0/advertisers",
+							"host": [
+								"{{hostUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"advertisers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find all",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostUrl}}/api/v0/advertisers",
+							"host": [
+								"{{hostUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"advertisers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find all by Criteria",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Google\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostUrl}}/api/v0/advertisers/criteria",
+							"host": [
+								"{{hostUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"advertisers",
+								"criteria"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostUrl}}/api/v0/advertisers/1",
+							"host": [
+								"{{hostUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"advertisers",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"put title\",\r\n    \"description\": \"put description\",\r\n    \"location\": \"put location\",\r\n    \"pictureUrl\": \"put picture url\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostUrl}}/api/v0/advertisers/1",
+							"host": [
+								"{{hostUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"advertisers",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Partial Update",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\": \"patch description\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostUrl}}/api/v0/advertisers/1",
+							"host": [
+								"{{hostUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"advertisers",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restore by ID",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{hostUrl}}/api/v0/advertisers/restore/1",
+							"host": [
+								"{{hostUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"advertisers",
+								"restore",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{hostUrl}}/api/v0/advertisers/1",
+							"host": [
+								"{{hostUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"advertisers",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Campaign",
+			"item": [
+				{
+					"name": "Save",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"test title\",\r\n    \"description\": \"test description\",\r\n    \"location\": \"test location\",\r\n    \"pictureUrl\": \"test picture url\",\r\n    \"userType\": \"FROM_18_YEARS\",\r\n    \"countriesIds\": [\r\n        1,\r\n        2\r\n    ],\r\n    \"languagesIds\": [\r\n        1,\r\n        2\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostUrl}}/api/v0/campaigns/1",
+							"host": [
+								"{{hostUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"campaigns",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find all",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostUrl}}/api/v0/campaigns",
+							"host": [
+								"{{hostUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"campaigns"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find all by Criteria",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Google\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostUrl}}/api/v0/campaigns/criteria",
+							"host": [
+								"{{hostUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"campaigns",
+								"criteria"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostUrl}}/api/v0/campaigns/1",
+							"host": [
+								"{{hostUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"campaigns",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"put title\",\r\n    \"description\": \"put description\",\r\n    \"location\": \"put location\",\r\n    \"pictureUrl\": \"put picture url\",\r\n    \"userType\": \"FROM_12_TO_18_YEARS\",\r\n    \"countriesIds\": [\r\n        3,\r\n        4\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostUrl}}/api/v0/campaigns/2",
+							"host": [
+								"{{hostUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"campaigns",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Partial Update",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\": \"patch description\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostUrl}}/api/v0/campaigns/1",
+							"host": [
+								"{{hostUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"campaigns",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restore by ID",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{hostUrl}}/api/v0/campaigns/restore/1",
+							"host": [
+								"{{hostUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"campaigns",
+								"restore",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{hostUrl}}/api/v0/campaigns/1",
+							"host": [
+								"{{hostUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"campaigns",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Country",
+			"item": [
+				{
+					"name": "Save",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"test name\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostUrl}}/api/v0/countries",
+							"host": [
+								"{{hostUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"countries"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find all",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostUrl}}/api/v0/countries",
+							"host": [
+								"{{hostUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"countries"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostUrl}}/api/v0/countries/1",
+							"host": [
+								"{{hostUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"countries",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"put name\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostUrl}}/api/v0/countries/1",
+							"host": [
+								"{{hostUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"countries",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restore by ID",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{hostUrl}}/api/v0/countries/restore/1",
+							"host": [
+								"{{hostUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"countries",
+								"restore",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{hostUrl}}/api/v0/countries/1",
+							"host": [
+								"{{hostUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"countries",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Language",
+			"item": [
+				{
+					"name": "Save",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"test name\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostUrl}}/api/v0/languages",
+							"host": [
+								"{{hostUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"languages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find all",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostUrl}}/api/v0/languages",
+							"host": [
+								"{{hostUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"languages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostUrl}}/api/v0/languages/1",
+							"host": [
+								"{{hostUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"languages",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"put name\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostUrl}}/api/v0/languages/1",
+							"host": [
+								"{{hostUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"languages",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restore by ID",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{hostUrl}}/api/v0/languages/restore/1",
+							"host": [
+								"{{hostUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"languages",
+								"restore",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{hostUrl}}/api/v0/languages/1",
+							"host": [
+								"{{hostUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"languages",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json();\r",
+									"var bodyToken = responseJson.data.token;\r",
+									"pm.collectionVariables.set(\"jwtToken\", bodyToken);\r",
+									"console.log(pm.collectionVariables.get(\"jwtToken\"));\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"user\",\r\n    \"email\": \"user@example.com\",\r\n    \"password\": \"admin\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostUrl}}/api/v0/auth/register",
+							"host": [
+								"{{hostUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json();\r",
+									"var bodyToken = responseJson.data.token;\r",
+									"pm.collectionVariables.set(\"jwtToken\", bodyToken);\r",
+									"console.log(pm.collectionVariables.get(\"jwtToken\"));\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"Konstantin\",\r\n    \"password\": \"admin\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostUrl}}/api/v0/auth/login",
+							"host": [
+								"{{hostUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"jwtToken\", \"\");\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{hostUrl}}/api/v0/logout",
+							"host": [
+								"{{hostUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Find all",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer_eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJTYW55YSIsInJvbGVzIjpbIlJPTEVfVVNFUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNjczMTMzMjA2LCJleHAiOjE2NzMxMzY4MDZ9.UtxmY29_tzyt4LBgFHlsFKmX9XpSTCWJnHCXgQ-iyWw",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{hostUrl}}/api/v0/users",
+							"host": [
+								"{{hostUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer_eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJTYW55YSIsInJvbGVzIjpbIlJPTEVfVVNFUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNjczMTg0ODQyLCJleHAiOjE2NzMxODg0NDJ9.6ze0khixhn6zPLBH9o7xC_SDgzDY4A62p7HVkgw9eYc",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{hostUrl}}/api/v0/users/1",
+							"host": [
+								"{{hostUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"users",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find by username",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer_eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJTYW55YSIsInJvbGVzIjpbIlJPTEVfVVNFUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNjczMTg0ODQyLCJleHAiOjE2NzMxODg0NDJ9.6ze0khixhn6zPLBH9o7xC_SDgzDY4A62p7HVkgw9eYc",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{hostUrl}}/api/v0/users/byUsername/Konstantin",
+							"host": [
+								"{{hostUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"users",
+								"byUsername",
+								"Konstantin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer_eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJTYW55YSIsInJvbGVzIjpbIlJPTEVfVVNFUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNjczMTMzNjA3LCJleHAiOjE2NzMxMzcyMDd9.tUJqaN2Zf_9d3KqoEzYARlBbpX578yJbsTRckdOgBEU",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"Konstantin\",\r\n    \"firstName\": \"Konstantin\",\r\n    \"lastName\": \"Voytko\",\r\n    \"email\": \"konstantin@example.com\",\r\n    \"phone\": \"+375(11)222-33-44\",\r\n    \"status\": \"ACTIVE\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostUrl}}/api/v0/users/1",
+							"host": [
+								"{{hostUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"users",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Partial Update",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer_eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJTYW55YSIsInJvbGVzIjpbIlJPTEVfVVNFUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNjczMTMzNjA3LCJleHAiOjE2NzMxMzcyMDd9.tUJqaN2Zf_9d3KqoEzYARlBbpX578yJbsTRckdOgBEU",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Konstantin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostUrl}}/api/v0/users/1",
+							"host": [
+								"{{hostUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"users",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restore by ID",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer_eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbIlJPTEVfVVNFUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNjcxNjI4NzE1LCJleHAiOjE2NzE2MzIzMTV9.pkiOMdPQ3MbsfB6a2ZUbpzl2HBfI1o24KAmYd4xyGMU",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{hostUrl}}/api/v0/users/restore/1",
+							"host": [
+								"{{hostUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"users",
+								"restore",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer_eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ6enoiLCJyb2xlcyI6WyJST0xFX1VTRVIiXSwiaWF0IjoxNjcxNjI5NDg4LCJleHAiOjE2NzE2MzMwODh9.o5rJ1HfEZtjwGez1w0D8CChvpNQOj5bkE3CFgXHUrDg",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{hostUrl}}/api/v0/users/1",
+							"host": [
+								"{{hostUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"users",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{jwtToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "hostUrl",
+			"value": "localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "jwtToken",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

@@ -64,3 +64,80 @@ Run Application using Docker Compose:
 Browse OpenAPI Documentation:  
 `localhost:8080/swagger-ui.html`  
 `localhost:8080/v3/api-docs`
+
+
+---
+
+### :pushpin: **API Endpoints**
+
+**Authentication**
+
+| **HTTP METHOD** |        **ENDPOINT**        | **DESCRIPTION** |
+|:---------------:|:--------------------------:|:---------------:|
+|    **POST**     |  `/api/v0/auth/register`   |  Register User  |
+|    **POST**     |    `/api/v0/auth/login`    | Authorize User  |
+|    **POST**     |      `/api/v0/logout`      |   Logout User   |
+
+**Users**
+
+| **HTTP METHOD** |                **ENDPOINT**                |      **DESCRIPTION**      |
+|:---------------:|:------------------------------------------:|:-------------------------:|
+|     **GET**     |            `/auth/api/v0/users`            |      Find all Users       |
+|     **GET**     |         `/auth/api/v0/users/{id}`          |      Find User by ID      |
+|     **GET**     | `/auth/api/v0/users/byUsername/{username}` |   Find User by username   |
+|     **PUT**     |         `/auth/api/v0/users/{id}`          |     Update User by ID     |
+|    **PATCH**    |         `/auth/api/v0/users/{id}`          | Partial Update User by ID |
+|    **PATCH**    |     `/auth/api/v0/users/restore/{id}`      |    Restore User by ID     |
+|   **DELETE**    |         `/auth/api/v0/users/{id}`          |     Delete User by ID     |
+
+**Advertisers**
+
+| **HTTP METHOD** |            **ENDPOINT**            |         **DESCRIPTION**          |
+|:---------------:|:----------------------------------:|:--------------------------------:|
+|    **POST**     |       `/api/v0/advertisers`        |       Save new Advertiser        |
+|     **GET**     |       `/api/v0/advertisers`        |       Find all Advertisers       |
+|     **GET**     |   `/api/v0/advertisers/criteria`   | Find all Advertisers by Criteria |
+|     **GET**     |     `/api/v0/advertisers/{id}`     |      Find Advertiser by ID       |
+|     **PUT**     |     `/api/v0/advertisers/{id}`     |     Update Advertiser by ID      |
+|    **PATCH**    |     `/api/v0/advertisers/{id}`     | Partial Update Advertiser by ID  |
+|    **PATCH**    | `/api/v0/advertisers/restore/{id}` |     Restore Advertiser by ID     |
+|   **DELETE**    |     `/api/v0/advertisers/{id}`     |     Delete Advertiser by ID      |
+
+**Campaigns**
+
+| **HTTP METHOD** |           **ENDPOINT**           |        **DESCRIPTION**         |
+|:---------------:|:--------------------------------:|:------------------------------:|
+|    **POST**     |   `/api/v0/campaigns/{newsId}`   |       Save new Campaign        |
+|     **GET**     |       `/api/v0/campaigns`        |       Find all Campaigns       |
+|     **GET**     |   `/api/v0/campaigns/criteria`   | Find all Campaigns by Criteria |
+|     **GET**     |     `/api/v0/campaigns/{id}`     |      Find Campaign by ID       |
+|     **PUT**     |     `/api/v0/campaigns/{id}`     |     Update Campaign by ID      |
+|    **PATCH**    |     `/api/v0/campaigns/{id}`     | Partial Update Campaign by ID  |
+|    **PATCH**    | `/api/v0/campaigns/restore/{id}` |     Restore Campaign by ID     |
+|   **DELETE**    |     `/api/v0/campaigns/{id}`     |     Delete Campaign by ID      |
+
+**Countries**
+
+| **HTTP METHOD** |           **ENDPOINT**           |        **DESCRIPTION**         |
+|:---------------:|:--------------------------------:|:------------------------------:|
+|    **POST**     |   `/api/v0/countries/{newsId}`   |        Save new Country        |
+|     **GET**     |       `/api/v0/countries`        |       Find all Countries       |
+|     **GET**     |   `/api/v0/countries/criteria`   | Find all Countries by Criteria |
+|     **GET**     |     `/api/v0/countries/{id}`     |       Find Country by ID       |
+|     **PUT**     |     `/api/v0/countries/{id}`     |      Update Country by ID      |
+|    **PATCH**    |     `/api/v0/countries/{id}`     |  Partial Update Country by ID  |
+|    **PATCH**    | `/api/v0/countries/restore/{id}` |     Restore Country by ID      |
+|   **DELETE**    |     `/api/v0/countries/{id}`     |      Delete Country by ID      |
+
+**Languages**
+
+| **HTTP METHOD** |           **ENDPOINT**           |        **DESCRIPTION**         |
+|:---------------:|:--------------------------------:|:------------------------------:|
+|    **POST**     |   `/api/v0/languages/{newsId}`   |       Save new Language        |
+|     **GET**     |       `/api/v0/languages`        |       Find all Languages       |
+|     **GET**     |   `/api/v0/languages/criteria`   | Find all Languages by Criteria |
+|     **GET**     |     `/api/v0/languages/{id}`     |      Find Language by ID       |
+|     **PUT**     |     `/api/v0/languages/{id}`     |     Update Language by ID      |
+|    **PATCH**    |     `/api/v0/languages/{id}`     | Partial Update Language by ID  |
+|    **PATCH**    | `/api/v0/languages/restore/{id}` |     Restore Language by ID     |
+|   **DELETE**    |     `/api/v0/languages/{id}`     |     Delete Language by ID      |

@@ -24,6 +24,8 @@ public class SecurityConfig {
 
     private final JwtConfigurer jwtConfigurer;
 
+    private static final String LOGOUT_API_PATH = "/api/v0/logout";
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
             throws Exception {
@@ -39,7 +41,7 @@ public class SecurityConfig {
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .logout(logout -> logout
-                        .logoutUrl("/api/v0/logout")
+                        .logoutUrl(LOGOUT_API_PATH)
                         .addLogoutHandler(new SecurityContextLogoutHandler())
                         .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK))
                 )
